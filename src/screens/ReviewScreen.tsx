@@ -115,22 +115,24 @@ const ReviewScreen = ({ destination, pack, startDate, onEdit, onPay }: Props) =>
         </ESewaButton>
       </div>
 
-      <ESewaDialog
-        isOpen={confirming}
-        position="bottom"
-        title="Confirm payment"
-        okText={`Pay ${rupees(pack.price - cashback)}`}
-        cancelText="Go back"
-        onOk={() => {
-          setConfirming(false)
-          onPay()
-        }}
-        onCancel={() => setConfirming(false)}
-      >
-        <p className="text-[13px] leading-relaxed text-slate">
-          {`${pack.data} for ${destination.name}, valid ${validityLabel(pack.validity)} from ${longDate(startDate)}.`}
-        </p>
-      </ESewaDialog>
+      {confirming && (
+        <ESewaDialog
+          isOpen={true}
+          position="bottom"
+          title="Confirm payment"
+          okText={`Pay ${rupees(pack.price - cashback)}`}
+          cancelText="Go back"
+          onOk={() => {
+            setConfirming(false)
+            onPay()
+          }}
+          onCancel={() => setConfirming(false)}
+        >
+          <p className="text-[13px] leading-relaxed text-slate">
+            {`${pack.data} for ${destination.name}, valid ${validityLabel(pack.validity)} from ${longDate(startDate)}.`}
+          </p>
+        </ESewaDialog>
+      )}
     </div>
   )
 }
