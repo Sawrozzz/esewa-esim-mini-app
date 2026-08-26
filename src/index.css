@@ -1,1 +1,158 @@
 @import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   eSIM mini app — design tokens.
+   Colours are drawn from the eSewa palette (esewa-ui-library CSS variables) so
+   the mini app stays inside the host's system; the type scale and the SIM-chip
+   motif are what make it its own thing.
+--------------------------------------------------------------------------- */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Surfaces */
+  --color-paper: #f7f8f9;
+  --color-card: #ffffff;
+  --color-mist: #eef0f2;
+
+  /* Ink — deep navy carries the product artwork */
+  --color-ink: #12314c;
+  --color-ink-2: #1b4468;
+  --color-slate: #576c80;
+  --color-slate-2: #798999;
+  --color-hairline: #e2e6ea;
+
+  /* eSewa brand green — reserved for actions and money */
+  --color-brand: #29bb00;
+  --color-brand-dark: #219600;
+  --color-brand-wash: #e7f8e3;
+
+  /* Signal blue — coverage, data, connectivity */
+  --color-signal: #3ca2fe;
+  --color-signal-wash: #e6f3ff;
+
+  /* Amber — time and validity */
+  --color-amber: #de7f07;
+  --color-amber-wash: #fbeedf;
+
+  /* The contact pads on the eSIM artwork */
+  --color-contact: #d9b65a;
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    background: #eceff2;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Numbers are the content here: data, days, rupees. Keep them aligned. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  /* Sidebar navigation — visible on web/desktop (768px+), hidden on mobile. */
+  .sidebar {
+    @apply w-20 flex flex-col items-center border-r bg-[var(--color-paper)] shadow-sm py-6 [&>*:not(.tab-btn)]:hidden;
+  }
+
+  .tab-btn {
+    @apply rounded-md px-3 py-2 text-sm font-medium text-slate hover:bg-mist hover:text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand;
+  }
+
+  /* Section eyebrow — a hairline plus a short label. Used to separate the
+     three real decisions in the flow: where, how long, which pack. */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-slate-2);
+  }
+  .eyebrow::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--color-hairline);
+  }
+
+  /* Faint dot matrix — the "coverage" texture behind the hero. */
+  .dot-field {
+    background-image: radial-gradient(rgba(60, 162, 254, 0.28) 1px, transparent 1px);
+    background-size: 14px 14px;
+  }
+
+  .rise {
+    animation: rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* One sweep across the eSIM artwork when it first assembles. */
+  .sheen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.16) 50%, transparent 65%);
+    transform: translateX(-120%);
+    animation: sweep 1400ms 260ms cubic-bezier(0.4, 0, 0.2, 1) 1 forwards;
+    pointer-events: none;
+  }
+
+  @keyframes sweep {
+    to {
+      transform: translateX(120%);
+    }
+  }
+
+  .pressable {
+    transition: transform 120ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  }
+  .pressable:active {
+    transform: scale(0.985);
+  }
+}
+
+/* Library overrides — the eSewa inputs ship with a 16px bottom margin that
+   fights our own spacing rhythm. */
+.esim-field .input-field {
+  margin-bottom: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

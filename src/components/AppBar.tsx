@@ -1,26 +1,32 @@
-import { useEffect } from 'react';
-import { ESewaAppBar, useESewaDataProvider } from 'esewa-ui-library';
+import { useEffect } from 'react'
+import { ESewaAppBar, useESewaDataProvider } from 'esewa-ui-library'
 
-const AppBar = () => {
-  const { updateData } = useESewaDataProvider();
+type Props = {
+  title: string
+  onBack: () => void
+  /** Present on the destinations screen only — opens the traveller's eSIMs. */
+  actionIcon?: string
+  onAction?: () => void
+}
+
+const AppBar = ({ title, onBack, actionIcon, onAction }: Props) => {
+  const { updateData } = useESewaDataProvider()
 
   useEffect(() => {
-      updateData({
-        title: "Merchant Product Form",
-      });
-    }, []);
+    updateData({ title })
+  }, [title])
 
   return (
-    <ESewaAppBar 
-      icon="icon-es-arrow-left"
-      titleposition="left"
-      onBackIconClick={() => console.log('Back icon clicked')}
-      onTitleClick={() => console.log('Title clicked')}
-      onActionIconClick={() => console.log('Action icon clicked')}
-      actionIcon="icon-settings"
-    />
-  );
-};
+    <div className="sticky top-0 z-30">
+      <ESewaAppBar
+        icon="icon-es-arrow-left"
+        titleposition="left"
+        onBackIconClick={onBack}
+        actionIcon={actionIcon}
+        onActionIconClick={onAction}
+      />
+    </div>
+  )
+}
 
-export default AppBar;
-
+export default AppBar
