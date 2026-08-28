@@ -16,6 +16,9 @@ type Props = {
   startDate: string
   onEdit: () => void
   onPay: () => void
+  balance?: number | null
+  hostUser?: { name?: string; esewa_id?: string; mobile?: string } | null
+  hostLocation?: { address?: string; latitude?: number; longitude?: number } | null
 }
 
 const Line = ({
@@ -39,7 +42,7 @@ const Line = ({
   </div>
 )
 
-const ReviewScreen = ({ destination, pack, startDate, onEdit, onPay }: Props) => {
+const ReviewScreen = ({ destination, pack, startDate, onEdit, onPay, balance, hostUser, hostLocation }: Props) => {
   const [confirming, setConfirming] = useState(false)
   const cashback = cashbackOn(pack.price)
 
@@ -84,8 +87,12 @@ const ReviewScreen = ({ destination, pack, startDate, onEdit, onPay }: Props) =>
           </div>
           <div className="flex items-center gap-2 pb-3 text-[12px] text-slate">
             <i className="icon-es-wallet text-[15px] text-brand-dark" aria-hidden="true" />
-            Paid from eSewa balance · Rs 12,480 available
+            Paid from eSewa balance · {rupees(balance ?? 12480)} available
+            {hostUser?.name ? ` · ${hostUser.name}` : ''}
           </div>
+          {hostLocation?.address && (
+            <div className="pb-3 text-[11px] text-slate-2">Location from host: {hostLocation.address} ({hostLocation.latitude}, {hostLocation.longitude})</div>
+          )}
         </div>
       </section>
 

@@ -18,6 +18,9 @@ type Props = {
   startDate: string
   onInstall: () => void
   onDone: () => void
+  hostUser?: { name?: string; esewa_id?: string; mobile?: string; email?: string; balance?: number } | null
+  hostLocation?: { address?: string; latitude?: number; longitude?: number } | null
+  balance?: number | null
 }
 
 /** Three real steps, in order — the only place numbering earns its keep. */
@@ -32,7 +35,7 @@ const STEPS = [
 const ACTIVATION_CODE = 'LPA:1$esewa-rsp.example.com$A4F7-KQ92-MT31'
 const orderId = (pack: Package) => `ESW-${pack.id.replace(/[^a-z0-9]/gi, '').slice(0, 12).toUpperCase()}`
 
-const SuccessScreen = ({ destination, pack, startDate, onInstall, onDone }: Props) => {
+const SuccessScreen = ({ destination, pack, startDate, onInstall, onDone, hostUser, hostLocation, balance }: Props) => {
   const qrRef = useRef<HTMLCanvasElement>(null)
   const cashback = cashbackOn(pack.price)
 
@@ -69,9 +72,18 @@ const SuccessScreen = ({ destination, pack, startDate, onInstall, onDone }: Prop
     })
     doc.setTextColor(0)
 
+    const userLine = hostUser ? `${hostUser.name ?? ''} (${hostUser.esewa_id ?? ''})`.trim() : '—'
+    const balanceLine = typeof balance === 'number' ? rupees(balance) : typeof hostUser?.balance === 'number' ? rupees(hostUser.balance) : '—'
+    const locationLine = hostLocation?.address ? `${hostLocation.address} (${hostLocation.latitude}, ${hostLocation.longitude})` : '—'
     const rows: [string, string][] = [
       ['Order ID', orderId(pack)],
       ['Activation code', ACTIVATION_CODE],
+      ['User', userLine],
+      ['eSewa ID', hostUser?.esewa_id ?? '—'],
+      ['Mobile', hostUser?.mobile ?? '—'],
+      ['Email', hostUser?.email ?? '—'],
+      ['Wallet balance (from host)', balanceLine],
+      ['User location (from host)', locationLine],
       ['Destination', destination.name],
       ['Data allowance', pack.data],
       ['Validity', `${validityLabel(pack.validity)} (${pack.validity} days)`],
@@ -130,6 +142,18 @@ const SuccessScreen = ({ destination, pack, startDate, onInstall, onDone }: Prop
       <section className="mt-5 px-4">
         <EsimCard destination={destination} pack={pack} startDate={startDate} state="issued" />
       </section>
+
+      {(hostUser || hostLocation) && (
+        <section className="mt-6 px-4">
+          <div className="eyebrow">Billed to (from host)</div>
+          <div className="mx-4 mt-3 rounded-2xl border border-hairline bg-card px-4 py-3">
+            {hostUser?.name && <div className="text-[13px] font-medium text-ink">{hostUser.name} <span className="text-slate">· {hostUser.esewa_id}</span></div>}
+            {hostUser?.mobile && <div className="text-[12px] text-slate">{hostUser.mobile} · {hostUser.email ?? ''}</div>}
+            {typeof balance === 'number' && <div className="mt-2 text-[12px] text-slate">Wallet balance from host: <span className="font-medium text-ink">{rupees(balance)}</span></div>}
+            {hostLocation?.address && <div className="text-[11px] text-slate-2">Location from host: {hostLocation.address} ({hostLocation.latitude}, {hostLocation.longitude})</div>}
+          </div>
+        </section>
+      )}
 
       <section className="mt-7">
         <div className="eyebrow px-4">Scan to activate</div>

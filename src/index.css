@@ -44,13 +44,25 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  body {
+  /* Standalone mode (pnpm dev/preview): body owns background */
+  body.esim-standalone {
     margin: 0;
     background: #eceff2;
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
+  }
+
+  /* Embedded (inside host PhoneShell): don't touch host's <body> — scope to root */
+  .esim-mini-app-root {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    /* isolate stacking & ensure vars resolve even though @theme is global */
+    isolation: isolate;
   }
 
   /* Numbers are the content here: data, days, rupees. Keep them aligned. */
