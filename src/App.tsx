@@ -210,7 +210,7 @@ function MiniApp({ merchantIdentifier, vendorIdentifier, embedded }: MiniAppProp
   }
 
   return (
-    <div className={`esim-mini-app-root flex ${isEmbedded ? 'min-h-full' : 'min-h-dvh'} bg-[var(--color-paper)]`}>
+    <div className={`esim-mini-app-root flex ${isEmbedded ? 'min-h-full' : 'min-h-dvh'} bg-paper`}>
       {isWeb && !isEmbedded && (
         <Sidebar
           onStepChange={(s) => {
@@ -221,7 +221,7 @@ function MiniApp({ merchantIdentifier, vendorIdentifier, embedded }: MiniAppProp
         />
       )}
 
-      <main className={isWeb && !isEmbedded ? 'flex-1 ml-[224px]' : `flex-1 mx-auto w-full ${isEmbedded ? 'max-w-full' : 'max-w-[480px]'}`}>
+      <main className={isWeb && !isEmbedded ? 'flex-1 ml-56' : `flex-1 mx-auto w-full ${isEmbedded ? 'max-w-full' : 'max-w-120'}`}>
         <div className={`flex flex-col ${isEmbedded ? 'min-h-full' : 'min-h-dvh'}`}>
           <AppBar
             title={isProcessing ? 'Processing payment' : TITLES[step]}
